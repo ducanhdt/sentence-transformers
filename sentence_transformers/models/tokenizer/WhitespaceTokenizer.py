@@ -22,20 +22,50 @@ class WhitespaceTokenizer(WordTokenizer):
         self.vocab = vocab
         self.word2idx = collections.OrderedDict([(word, idx) for idx, word in enumerate(vocab)])
 
+    # def tokenize(self, text: str) -> List[int]:
+    #     if self.do_lower_case:
+    #         text = text.lower()
+
+    #     tokens = text.split()
+
+    #     tokens_filtered = []
+    #     for token in tokens:
+    #         if token in self.stop_words:
+    #             continue
+    #         elif token in self.word2idx:
+    #             tokens_filtered.append(self.word2idx[token])
+    #             continue
+
+    #         token = token.strip(string.punctuation)
+    #         if token in self.stop_words:
+    #             continue
+    #         elif len(token) > 0 and token in self.word2idx:
+    #             tokens_filtered.append(self.word2idx[token])
+    #             continue
+
+    #         token = token.lower()
+    #         if token in self.stop_words:
+    #             continue
+    #         elif token in self.word2idx:
+    #             tokens_filtered.append(self.word2idx[token])
+    #             continue
+
+    #     return tokens_filtered
     def tokenize(self, text: str) -> List[int]:
         if self.do_lower_case:
             text = text.lower()
-
+        for stopword in self.stop_words:
+            if stopword in text:
+                text = text.replace(stopword,"")
+        text = text.strip()
         tokens = text.split()
 
         tokens_filtered = []
         for token in tokens:
-            if token in self.stop_words:
-                continue
-            elif token in self.word2idx:
+            if token in self.word2idx:
                 tokens_filtered.append(self.word2idx[token])
                 continue
-
+            #string.punctuation == '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' 
             token = token.strip(string.punctuation)
             if token in self.stop_words:
                 continue
@@ -49,9 +79,8 @@ class WhitespaceTokenizer(WordTokenizer):
             elif token in self.word2idx:
                 tokens_filtered.append(self.word2idx[token])
                 continue
-
+            tokens_filtered.append(0)
         return tokens_filtered
-
     def save(self, output_path: str):
         with open(os.path.join(output_path, 'whitespacetokenizer_config.json'), 'w') as fOut:
             json.dump({'vocab': list(self.word2idx.keys()), 'stop_words': list(self.stop_words), 'do_lower_case': self.do_lower_case}, fOut)

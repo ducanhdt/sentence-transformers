@@ -19,3 +19,10 @@ nr_*/
 /docs/make.bat
 /docs/Makefile
 /examples/training/quora_duplicate_questions/quora-IR-dataset/
+examples/output
+sentence_transformers.egg-info
+dist/
+nr_*/
+.vscode/
+__pycache__/
+Pre-trained_models
